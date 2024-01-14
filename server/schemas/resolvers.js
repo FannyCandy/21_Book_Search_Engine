@@ -15,7 +15,7 @@ const resolvers = {
         addUser: async (parent, { username, email, password }) => {
             const user = await User.create({ username, email, password });
             const token = signToken(user);
-
+            console.log(user);
             return { token, user };
         },
         login: async (parent, { email, password }) => {
@@ -24,7 +24,7 @@ const resolvers = {
                 throw AuthenticationError;
             }
 
-            const correctPw = await profile.isCorrectPassword(password);
+            const correctPw = await user.isCorrectPassword(password);
             if (!correctPw) {
                 throw AuthenticationError;
             }
