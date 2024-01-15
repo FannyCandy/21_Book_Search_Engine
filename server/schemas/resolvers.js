@@ -15,12 +15,12 @@ const resolvers = {
         addUser: async (parent, { username, email, password }) => {
             const user = await User.create({ username, email, password });
             const token = signToken(user);
-            console.log(user);
+            console.log('added user..', user);
             return { token, user };
         },
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
-            if (!User) {
+            if (!user) {
                 throw AuthenticationError;
             }
 
@@ -37,11 +37,21 @@ const resolvers = {
                 return User.findOneAndUpdate(
                     { _id: context.user._id },
                     { $addToSet: { savedBooks: savedBook } },
-                    { new: true, runValidators: true }
+                    { new: true }
                 );
             }
             throw AuthenticationError;
         },
+        // saveBook: async (parent, { userId, savedBook }, context) => {
+        //     if (context.user) {
+        //         return User.findOneAndUpdate(
+        //             { _id: userId },
+        //             { $addToSet: { savedBooks: savedBook } },
+        //             { new: true, runValidators: true }
+        //         );
+        //     }
+        //     throw AuthenticationError;
+        // },
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
                 return User.findOneAndUpdate(
